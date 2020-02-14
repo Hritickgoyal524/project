@@ -34,15 +34,16 @@ while(True):
      res=cv2.bitwise_and(frame,frame,mask=mask)
 
      countours,_ = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-     for contour in countours:
+     max_area = 0
+     max_index = 0
+     for i, contour in enumerate(countours):
         area = cv2.contourArea(contour)
-        large.append(area)
-        large.sort()
-        
-        #largest=max(large)
-        #print(largest)
-        cv2.drawContours(res, contour, -1, (0, 255, 0), 3)  
-           print("Areaofcounytour",area) 
+        if max_area < area:
+            max_area = area
+            max_index = i   
+     (x,y,w,h) = cv2.boundingRect(countours[max_index]) 
+     cv2.rectangle(res, (x, y), (x+w, y+h), (0, 255, 0), 2)
+    # cv2.drawContours(res, countours[max_index], -1, (0, 255, 0), 3)
      out.write(res)
      cv2.imshow("frame",frame)
      cv2.imshow("mask",mask)
